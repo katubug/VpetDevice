@@ -1,4 +1,5 @@
 #include <M5Unified.h>
+#include "platform/input.h"
 
 void setup() {
   auto cfg = M5.config();
@@ -14,7 +15,7 @@ void setup() {
 }
 
 void loop() {
-  M5.update();
+  M5.update(); //this needs to stay at the top of the loop for now, but we can move it later
 
   auto t = M5.Touch.getDetail();
   if (t.wasPressed()) {
@@ -24,21 +25,18 @@ void loop() {
 
   delay(10);
 
-  auto& btna = M5.BtnA;
-  if (btna.wasPressed()) {
+  if (input_check_pressed(Verb::select)) {
     M5.Display.fillScreen(TFT_CADETBLUE);
-    Serial.println("left");  
+    Serial.println("select");  
   }
 
-  auto& btnb = M5.BtnB;
-  if (btnb.wasPressed()) {
+  if (input_check_pressed(Verb::confirm)) {
     M5.Display.fillScreen(TFT_DARKCYAN);
     Serial.println("confirm");
   }
 
-  auto& btnc = M5.BtnC;
-  if (btnc.wasPressed()){
+  if (input_check_pressed(Verb::cancel)){
     M5.Display.fillScreen(TFT_BLUEVIOLET);
-    Serial.println("right");
+    Serial.println("cancel");
   }
 }
