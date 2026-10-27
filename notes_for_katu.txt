@@ -1,0 +1,3 @@
+printf prints inline. do println for newline, or add /n inside the string
+
+"auto" when declaring a variable makes a copy of whatever it's referencing. to directly reference the object, do "auto&"
