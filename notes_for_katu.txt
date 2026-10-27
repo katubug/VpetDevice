@@ -1,3 +1,5 @@
+always look for the FIRST error!!
+
 printf prints inline. do println for newline, or add /n inside the string
 
 "auto" when declaring a variable makes a copy of whatever it's referencing. to directly reference the object, do "auto&"
@@ -11,8 +13,18 @@ static means "private to this file"
 
 for includes, angle brackets mean libraries and quotes mean "one of my files" - the path starts from /src/
 
-`const char` means "text that won't be changed". so c++'s "string" is `const char*`
-
 `void` a function that just does something without returning a value to whatever called it. as opposed to `bool` or `int`
 
 `#pragma once` means the file only gets read once?
+
+On Characters, Strings, and Variables:
+
+`const char` means "text that won't be changed". so c++'s "string" is `const char*`
+
+but a formatted string would be `const char* fmt, ...` - fmt meaning format, and "..." being "and whatever else"
+
+when using ingame variables:
+- use %d for int
+- %f for decimals, %.2f for 2 places
+- %s for a string
+- %% for a literal "%" sign

@@ -12,7 +12,7 @@ void setup() {
   M5.Display.setTextSize(2);
   M5.Display.drawString("hello from vscode!", 10, 10);
   M5.Display.drawString("tap the screen", 10, 40);
-  Serial.println("core2 alive");
+  show_debug_message("core2 alive");
 }
 
 void loop() {
@@ -21,7 +21,7 @@ void loop() {
   auto t = M5.Touch.getDetail();
   if (t.wasPressed()) {
     M5.Display.fillCircle(t.x, t.y, 10, TFT_PINK);
-    Serial.printf("tap %d,%d\n", t.x, t.y);
+    show_debug_message("tap %d,%d", t.x, t.y);
   }
 
   delay(10);
