@@ -10,3 +10,9 @@ so main.cpp will use my abstracted, platform-agnostic verbs, which are defined i
 static means "private to this file"
 
 for includes, angle brackets mean libraries and quotes mean "one of my files" - the path starts from /src/
+
+`const char` means "text that won't be changed". so c++'s "string" is `const char*`
+
+`void` a function that just does something without returning a value to whatever called it. as opposed to `bool` or `int`
+
+`#pragma once` means the file only gets read once?

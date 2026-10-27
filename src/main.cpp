@@ -1,10 +1,11 @@
 #include <M5Unified.h>
 #include "platform/input.h"
+#include "platform/log.h"
 
 void setup() {
   auto cfg = M5.config();
   M5.begin(cfg);
-  Serial.begin(115200);
+  Serial.begin(115200);       //we'll remove this later when we tidy up
 
   M5.Display.fillScreen(TFT_BLACK);
   M5.Display.setTextColor(TFT_WHITE);
@@ -27,16 +28,16 @@ void loop() {
 
   if (input_check_pressed(Verb::select)) {
     M5.Display.fillScreen(TFT_CADETBLUE);
-    Serial.println("select");  
+    show_debug_message("select");
   }
 
   if (input_check_pressed(Verb::confirm)) {
     M5.Display.fillScreen(TFT_DARKCYAN);
-    Serial.println("confirm");
+    show_debug_message("confirm");
   }
 
   if (input_check_pressed(Verb::cancel)){
     M5.Display.fillScreen(TFT_BLUEVIOLET);
-    Serial.println("cancel");
+    show_debug_message("cancel");
   }
 }
