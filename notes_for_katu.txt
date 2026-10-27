@@ -1,3 +1,12 @@
 printf prints inline. do println for newline, or add /n inside the string
 
 "auto" when declaring a variable makes a copy of whatever it's referencing. to directly reference the object, do "auto&"
+
+.h files are the menu, they tell you what exists (verbs, function declaration etc)
+.cpp files are the kitchen, they determine what is INSIDE the functions etc.
+
+so main.cpp will use my abstracted, platform-agnostic verbs, which are defined in input.h, and the input_core2.cpp for the core2 version of the game will "hear" the calls for the verbs and respond with the core2 button inputs and what they should do
+
+static means "private to this file"
+
+for includes, angle brackets mean libraries and quotes mean "one of my files" - the path starts from /src/
