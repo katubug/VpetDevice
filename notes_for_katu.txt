@@ -1,6 +1,6 @@
 always look for the FIRST error!!
 
-printf prints inline. do println for newline, or add /n inside the string
+printf prints inline. do println for newline, or add \n inside the string
 
 "auto" when declaring a variable makes a copy of whatever it's referencing. to directly reference the object, do "auto&"
 
@@ -15,7 +15,7 @@ for includes, angle brackets mean libraries and quotes mean "one of my files" - 
 
 `void` a function that just does something without returning a value to whatever called it. as opposed to `bool` or `int`
 
-`#pragma once` means the file only gets read once?
+`#pragma once` means the file only gets read once, even if it gets included twice
 
 On Characters, Strings, and Variables:
 
@@ -28,3 +28,31 @@ when using ingame variables:
 - %f for decimals, %.2f for 2 places
 - %s for a string
 - %% for a literal "%" sign
+
+Finding stuff in a library:
+
+1. check the examples first, they're already on my pc:
+   .pio/libdeps/m5stack-core2/M5Unified/examples/
+   (that's where textdatum_t::middle_center came from - Basic/Speaker/Speaker.ino)
+
+2. search the library source in vscode:
+   - Ctrl+Shift+F, click the "..." to show "files to include", type .pio/libdeps/**
+   - turn OFF "Use Exclude Settings and Ignore Files" (book + gear icon). .pio is in .gitignore so vscode skips it otherwise and finds nothing
+   - search stuff like "setTextDatum" or "void fillCircle" to see what inputs it takes
+
+3. github pages (readmes, overviews):
+   - M5Unified (buttons, power, speaker etc): https://github.com/m5stack/M5Unified
+   - M5GFX (everything M5.Display): https://github.com/m5stack/M5GFX
+   - LovyanGFX (M5GFX is built on it, more drawing docs/examples): https://github.com/lovyan03/LovyanGFX
+   - some docs are in japanese, the code/examples are still readable
+
+4. c++ itself, not libraries:
+   - https://www.learncpp.com - beginner tutorial
+   - https://en.cppreference.com - exact reference, dense
+
+F12 / Ctrl+click = go to definition. fastest when it works, but needs intellisense (broken rn)
+
+Reading errors:
+- "X does not name a type" = wrong name or wrong namespace prefix (m5:: vs none etc). try dropping/changing the prefix
+- "no matching function for call to X(Y)" = X exists but doesn't take a Y. scroll down for the "note: candidate:" lines, they list what it DOES take
+- "did you mean ...?" = the compiler is usually right, check for typos
