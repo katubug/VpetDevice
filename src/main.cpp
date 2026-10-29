@@ -1,17 +1,17 @@
 #include <M5Unified.h>
 #include "platform/input.h"
 #include "platform/log.h"
+#include "platform/display.h"
+#include "game/palette.h"
 
 void setup() {
   auto cfg = M5.config();
   M5.begin(cfg);
   Serial.begin(115200);       //we'll remove this later when we tidy up
 
-  M5.Display.fillScreen(TFT_BLACK);
-  M5.Display.setTextColor(TFT_WHITE);
-  M5.Display.setTextSize(2);
-  M5.Display.drawString("hello from vscode!", 10, 10);
-  M5.Display.drawString("tap the screen", 10, 40);
+  draw_color(c_background_blue);
+  draw_text(10, 10, 2, c_font_blue, Align::topleft, "hello from vscode");
+    draw_text(10, 40, 2, c_font_blue, Align::topleft, "tap the screen");
   show_debug_message("core2 alive");
 }
 
@@ -27,17 +27,17 @@ void loop() {
   delay(10);
 
   if (input_check_pressed(Verb::select)) {
-    M5.Display.fillScreen(TFT_CADETBLUE);
-    show_debug_message("select");
+    draw_color(c_background_blue);
+    draw_text(display_get_width()/2, display_get_height()/2, 2, c_font_blue, Align::center, "Select");
   }
 
   if (input_check_pressed(Verb::confirm)) {
-    M5.Display.fillScreen(TFT_DARKCYAN);
-    show_debug_message("confirm");
+    draw_color(c_pink);
+    draw_text(display_get_width()/2, display_get_height()/2, 2, c_font_blue, Align::center, "Confirm");
   }
 
   if (input_check_pressed(Verb::cancel)){
-    M5.Display.fillScreen(TFT_BLUEVIOLET);
-    show_debug_message("cancel");
+    draw_color(c_yellow);
+    draw_text(display_get_width()/2, display_get_height()/2, 2, c_pink, Align::center, "Cancel");
   }
 }
