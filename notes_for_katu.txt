@@ -61,3 +61,13 @@ Reading errors:
 ---
 
 & before a thing (variable or object) means "the address of this thing." & after a type (which is NOT a thing) means "a reference to this thing"
+
+- be careful you don't accidentally do $ instead of &
+
+this isn't to be confused with *, which when added after a TYPE, means "the address of an instance of this type" (ie Scene* = the address of a Scene)
+
+"->" is a dot for pointers, it lets you call the proceeding function on whatever it's pointed at (from?) (ie current_scene->update() calls update() on current_scene)
+
+- be careful you don't accidentally do => instead of ->
+
+"nullptr" points at nothing. you always need to check for nullptr BEFORE you use "->" or else things can crash
