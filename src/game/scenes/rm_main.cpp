@@ -1,6 +1,7 @@
 #include "platform/display.h"
 #include "platform/input.h"
-#include "rm_main.h"
+#include "game/scenes/rm_main.h"
+#include "game/scene_manager.h"
 
 void RmMain::update(){  //This is "Step"
 
@@ -17,8 +18,7 @@ void RmMain::update(){  //This is "Step"
   }
 
   if (input_check_pressed(Verb::cancel)){
-    bg_color = c_yellow;
-    label = "Cancel";
+    room_goto(Room::rm_initial);
   }
 
 }

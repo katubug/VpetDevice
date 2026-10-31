@@ -11,6 +11,6 @@ class RmMain: public Scene{
     private:
         uint32_t bg_color = c_background_blue;
         uint32_t text_color = c_font_blue;
-        const char* label = "Hello!";
+        const char* label = "You started the game!";
 
 };

@@ -12,7 +12,7 @@ void setup() {
   M5.begin(cfg);
   display_init();
   Serial.begin(115200);       //we'll remove this later when we tidy up
-  room_goto(Room::rm_main);
+  room_goto(Room::rm_initial);
 
 }
 

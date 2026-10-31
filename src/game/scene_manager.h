@@ -1,6 +1,7 @@
 #pragma once
 
 enum class Room{
+    rm_initial,
     rm_main
 };
 
