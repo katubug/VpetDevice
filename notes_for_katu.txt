@@ -56,3 +56,8 @@ Reading errors:
 - "X does not name a type" = wrong name or wrong namespace prefix (m5:: vs none etc). try dropping/changing the prefix
 - "no matching function for call to X(Y)" = X exists but doesn't take a Y. scroll down for the "note: candidate:" lines, they list what it DOES take
 - "did you mean ...?" = the compiler is usually right, check for typos
+
+
+---
+
+& before a thing (variable or object) means "the address of this thing." & after a type (which is NOT a thing) means "a reference to this thing"

@@ -10,7 +10,9 @@ RmMain rm_main;     //creates a copy of the RmMain class, named "rm_main" - that
 void setup() {
   auto cfg = M5.config();
   M5.begin(cfg);
+  display_init();
   Serial.begin(115200);       //we'll remove this later when we tidy up
+
 }
 
 void loop() {
@@ -18,5 +20,6 @@ void loop() {
 
   rm_main.update();
   rm_main.draw();
+  display_push();
 
 }
