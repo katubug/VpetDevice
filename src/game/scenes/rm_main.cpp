@@ -4,6 +4,8 @@
 
 void RmMain::update(){  //This is "Step"
 
+    Scene::update();
+
     if (input_check_pressed(Verb::select)) {
     bg_color = c_background_blue;
     label = "Select";
@@ -22,6 +24,8 @@ void RmMain::update(){  //This is "Step"
 }
 
 void RmMain::draw(){
+    Scene::draw();  //event_inherited()
+    //then, RmMain's own stuff:
     draw_color(bg_color);
     draw_text(display_get_width()/2, display_get_height()/2, 2, text_color, Align::center, label);
 }

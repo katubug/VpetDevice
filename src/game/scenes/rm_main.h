@@ -1,11 +1,12 @@
 #pragma once
 #include <cstdint>
 #include "game/palette.h"
+#include "game/scenes/scene.h"
 
-class RmMain{
+class RmMain: public Scene{
     public:
-        void update();
-        void draw();
+        void update() override;
+        void draw() override;
 
     private:
         uint32_t bg_color = c_background_blue;
