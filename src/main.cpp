@@ -5,7 +5,7 @@
 #include "game/palette.h"
 #include "game/scenes/rm_main.h"
 
-RmMain rm_main;     //creates a copy of the RmMain class, named "rm_main" - that's what i need to use in the rest of this file
+RmMain rm_main;     //creates an instance of the RmMain class, named "rm_main" - that's what i need to use in the rest of this file
 
 void setup() {
   auto cfg = M5.config();

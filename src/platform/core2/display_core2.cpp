@@ -35,5 +35,5 @@ void display_init(){
 }
 
 void display_push(){
-    canvas.pushSprite(1, 1);
+    canvas.pushSprite(0, 0);
 }
