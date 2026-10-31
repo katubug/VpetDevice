@@ -1,0 +1,27 @@
+#include "platform/display.h"
+#include "platform/input.h"
+#include "rm_main.h"
+
+void RmMain::update(){  //This is "Step"
+
+    if (input_check_pressed(Verb::select)) {
+    bg_color = c_background_blue;
+    label = "Select";
+  }
+
+  if (input_check_pressed(Verb::confirm)) {
+    bg_color = c_pink;
+    label = "Confirm";
+  }
+
+  if (input_check_pressed(Verb::cancel)){
+    bg_color = c_yellow;
+    label = "Cancel";
+  }
+
+}
+
+void RmMain::draw(){
+    draw_color(bg_color);
+    draw_text(display_get_width()/2, display_get_height()/2, 2, text_color, Align::center, label);
+}
