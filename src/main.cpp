@@ -10,8 +10,8 @@
 void setup() {
   auto cfg = M5.config();
   M5.begin(cfg);
+    Serial.begin(115200);       //we'll remove this later when we tidy up
   display_init();
-  Serial.begin(115200);       //we'll remove this later when we tidy up
   room_goto(Room::rm_initial);
 
 }
