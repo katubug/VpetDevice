@@ -71,3 +71,10 @@ this isn't to be confused with *, which when added after a TYPE, means "the addr
 - be careful you don't accidentally do => instead of ->
 
 "nullptr" points at nothing. you always need to check for nullptr BEFORE you use "->" or else things can crash
+
+
+Things a new room needs in order to work:
+- to be added to the room enum in scene.h
+- to be an include for scene_manager.cpp
+- a header/.h file
+- a cpp file

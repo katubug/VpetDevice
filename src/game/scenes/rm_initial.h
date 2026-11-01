@@ -7,6 +7,7 @@ class RmInitial: public Scene{
     public:
         void update() override;
         void draw() override;
+        void room_start() override;
 
     private:
         uint32_t bg_color = c_yellow;

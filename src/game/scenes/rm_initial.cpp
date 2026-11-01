@@ -19,3 +19,7 @@ void RmInitial::draw(){
     draw_color(bg_color);
     draw_text(display_get_width()/2, display_get_height()/2, 2, text_color, Align::center, label);
 }
+
+void RmInitial::room_start(){
+    //nothing here for now
+}

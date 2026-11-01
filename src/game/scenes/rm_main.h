@@ -7,6 +7,7 @@ class RmMain: public Scene{
     public:
         void update() override;
         void draw() override;
+        void room_start() override;
 
     private:
         uint32_t bg_color = c_background_blue;
@@ -14,3 +15,4 @@ class RmMain: public Scene{
         const char* label = "You started the game!";
 
 };
+
