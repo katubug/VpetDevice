@@ -2,6 +2,9 @@
 #include "platform/input.h"
 #include "game/scenes/rm_main.h"
 #include "game/scene_manager.h"
+#include "platform/log.h"
+
+const int PET_GROUND_Y = 190;
 
 void RmMain::update(){  //This is "Step"
 
@@ -27,10 +30,17 @@ void RmMain::draw(){
     Scene::draw();  //event_inherited()
     //then, RmMain's own stuff:
     draw_color(bg_color);
-    draw_text(display_get_width()/2, display_get_height()/2, 2, text_color, Align::center, label);
+    draw_sprite(spr_chobo_base, 0, display_get_width()/2, PET_GROUND_Y);
+    draw_text(display_get_width()/2, display_get_height()/2-30, 2, text_color, Align::center, label);
 }
 
 void RmMain::room_start(){  //this resets the variables to the values in rm_main.h, we'll fix this later 
     bg_color = c_background_blue;
     label = "You started the game!";
+    if (spr_chobo_base == -1){
+      show_debug_message("chobo is %d", spr_chobo_base);
+      spr_chobo_base = sprite_add("spr_chobo_base", 56, 140);
+    } else {
+      show_debug_message("chobo is actually %d", spr_chobo_base);
+    }
 }

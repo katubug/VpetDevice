@@ -101,5 +101,8 @@ int sprite_add(const char* fname, int xorig, int yorig){
 }
 
 void draw_sprite(int sprite, int subimg, int x, int y){
+    if (sprite < 0 || sprite >= sprite_count) return;   //if the sprite is not loaded, don't continue
 
+    SpriteSlot& slot = sprites[sprite]; //grabs the CURRENT slot, not the next slot
+    slot.canvas.pushSprite(&canvas, x - slot.xorig, y - slot.yorig, SPRITE_TRANSPARENT); //copy the slot onto the address of the canvas, excluding the transparency color
 }

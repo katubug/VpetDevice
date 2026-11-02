@@ -13,6 +13,7 @@ class RmMain: public Scene{
         uint32_t bg_color = c_background_blue;
         uint32_t text_color = c_font_blue;
         const char* label = "You started the game!";
+        int spr_chobo_base = -1;
 
 };
 
