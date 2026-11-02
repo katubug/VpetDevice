@@ -62,6 +62,8 @@ Reading errors:
 
 & before a thing (variable or object) means "the address of this thing." & after a type (which is NOT a thing) means "a reference to this thing"
 
+"int& w" is a reference parameter. It allows the function to write into the caller's variables so it can return success/failure, plus W and H. (example in display_core2.cpp)
+
 - be careful you don't accidentally do $ instead of &
 
 this isn't to be confused with *, which when added after a TYPE, means "the address of an instance of this type" (ie Scene* = the address of a Scene)
@@ -78,3 +80,6 @@ Things a new room needs in order to work:
 - to be an include for scene_manager.cpp
 - a header/.h file
 - a cpp file
+
+to get art onto the device:
+- platformio (alien icon on sidebar) > m5stack-core2 > Platform > Upload Filesystem Image
