@@ -27,6 +27,7 @@ when using ingame variables:
 - use %d for int
 - %f for decimals, %.2f for 2 places
 - %s for a string
+- %llu for "long long unsigned" aka a really long number such as uint64_t
 - %% for a literal "%" sign
 
 Finding stuff in a library:
@@ -83,3 +84,6 @@ Things a new room needs in order to work:
 
 to get art onto the device:
 - platformio (alien icon on sidebar) > m5stack-core2 > Platform > Upload Filesystem Image
+
+
+we use uint64_t for time because uint32_t is a time bomb that will reset after only ~49 days. uint64_t lasts for millions of years.

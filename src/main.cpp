@@ -4,6 +4,7 @@
 #include "platform/display.h"
 #include "game/palette.h"
 #include "game/scene_manager.h"
+#include "platform/clock.h"
 
 
 
@@ -12,6 +13,7 @@ void setup() {
   M5.begin(cfg);
     Serial.begin(115200);       //we'll remove this later when we tidy up
   display_init();
+  show_debug_message("Current time is %llu", current_time());
   room_goto(Room::rm_initial);
 
 }
