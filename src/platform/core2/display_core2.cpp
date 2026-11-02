@@ -119,7 +119,7 @@ void draw_sprite(int sprite, int subimg, int x, int y){
     SpriteSlot& slot = sprites[sprite]; //grabs the CURRENT slot, not the next slot
     int32_t left = x-slot.xorig;
     int32_t top = y-slot.yorig;
-    int frame = subimg % slot.frames;
+    int frame = subimg % slot.frames;   //this line makes the subimg wrap around to frame 0 after it finishes
     screen.setClipRect(left, top, slot.frame_width, slot.canvas.height());
     slot.canvas.pushSprite(&screen, left - frame * slot.frame_width, top, SPRITE_TRANSPARENT); //copy the slot onto the address of the canvas, excluding the transparency color
     screen.clearClipRect();

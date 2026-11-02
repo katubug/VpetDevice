@@ -3,8 +3,11 @@
 #include "game/scenes/rm_main.h"
 #include "game/scene_manager.h"
 #include "platform/log.h"
+#include "platform/clock.h"
 
 const int PET_GROUND_Y = 190;
+const int CHOBO_WALK_FPS = 4;
+const int WALK_FRAME_MS = 1000/CHOBO_WALK_FPS;
 
 void RmMain::update(){  //This is "Step"
 
@@ -30,7 +33,8 @@ void RmMain::draw(){
     Scene::draw();  //event_inherited()
     //then, RmMain's own stuff:
     draw_color(bg_color);
-    draw_sprite(spr_chobo_walk_strip4, 0, display_get_width()/2, PET_GROUND_Y);
+    int anim_frame = current_time()/WALK_FRAME_MS;
+    draw_sprite(spr_chobo_walk_strip4, anim_frame, display_get_width()/2, PET_GROUND_Y);
     draw_text(display_get_width()/2, display_get_height()/2-30, 2, text_color, Align::center, label);
 }
 
