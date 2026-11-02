@@ -53,7 +53,7 @@ struct SpriteSlot{
     int frame_width = 0;
 };
 
-const int MAX_SPRITES = 32;
+const int MAX_SPRITES = 256;
 const uint32_t SPRITE_TRANSPARENT = 0xFF00FF; //magenta, never use this in art
 
 static SpriteSlot sprites[MAX_SPRITES];

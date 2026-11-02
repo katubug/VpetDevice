@@ -4,10 +4,7 @@
 #include "game/scene_manager.h"
 #include "platform/log.h"
 #include "platform/clock.h"
-
-const int PET_GROUND_Y = 190;
-const int CHOBO_WALK_FPS = 4;
-const int WALK_FRAME_MS = 1000/CHOBO_WALK_FPS;
+#include "game/config.h"
 
 void RmMain::update(){  //This is "Step"
 
