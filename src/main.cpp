@@ -40,5 +40,4 @@ void loop() {
   if (frame_length < FRAME_MS){
     delay(FRAME_MS-frame_length);
   }
-
 }

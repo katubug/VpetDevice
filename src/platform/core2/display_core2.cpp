@@ -2,8 +2,10 @@
 #include <M5Unified.h>
 #include "platform/display.h"
 #include "platform/log.h"
+#include <cstring>  //for strstr
+#include <cstdlib>  //for atoi
 
-static M5Canvas canvas(&M5.Display);     //offscreen copy of the screen to reduce flickering
+static M5Canvas screen(&M5.Display);     //offscreen copy of the screen to reduce flickering
 
 static textdatum_t datum_for(Align align){
     switch (align) {
@@ -22,31 +24,33 @@ int display_get_height(){
 }
 
 void draw_color(uint32_t color){
-    canvas.fillScreen(color);
+    screen.fillScreen(color);
 }
 
 void draw_text(int x, int y, int size, uint32_t color, Align align, const char* text){
-    canvas.setTextColor(color);
-    canvas.setTextSize(size);
-    canvas.setTextDatum(datum_for(align));
-    canvas.drawString(text, x, y);
+    screen.setTextColor(color);
+    screen.setTextSize(size);
+    screen.setTextDatum(datum_for(align));
+    screen.drawString(text, x, y);
 }
 
 void display_init(){
-    canvas.createSprite(M5.Display.width(), M5.Display.height());
+    screen.createSprite(M5.Display.width(), M5.Display.height());
     LittleFS.begin();
     bool chobo = LittleFS.exists("/sprites/spr_chobo_base.png");
     show_debug_message("chobo exists: %d", chobo);
 }
 
 void display_push(){
-    canvas.pushSprite(0, 0);
+    screen.pushSprite(0, 0);
 }
 
 struct SpriteSlot{
     M5Canvas canvas;
     int xorig = 0;
     int yorig = 0;
+    int frames = 1;
+    int frame_width = 0;
 };
 
 const int MAX_SPRITES = 32;
@@ -74,6 +78,13 @@ int sprite_add(const char* fname, int xorig, int yorig){
         show_debug_message("sprite-add: sprite Count %d has exceeded max sprites %d", sprite_count, MAX_SPRITES);
         return -1;
     }
+
+    //read the filename to determine frame number
+    int frame_count = 1;    //if the filename doesn't have "_strip", it defaults to 1 frame
+    const char* strip = strstr(fname, "_strip");    //find "_strip" in the name
+    if (strip != nullptr){
+        frame_count = atoi(strip+6);    //read the number after it
+    }
     
     //build the filepath
     char path[64];  //makes an empty text 64 chars long to put the filepath into
@@ -95,6 +106,8 @@ int sprite_add(const char* fname, int xorig, int yorig){
     slot.canvas.drawPngFile(LittleFS, path, 0, 0);
     slot.xorig = xorig;
     slot.yorig = yorig;
+    slot.frames = frame_count;
+    slot.frame_width = width/frame_count;
 
     return sprite_count++; //returns the slot we used and adds 1 one to the number
     //works the same as "int index = sprite_count; sprite_count++"
@@ -104,5 +117,11 @@ void draw_sprite(int sprite, int subimg, int x, int y){
     if (sprite < 0 || sprite >= sprite_count) return;   //if the sprite is not loaded, don't continue
 
     SpriteSlot& slot = sprites[sprite]; //grabs the CURRENT slot, not the next slot
-    slot.canvas.pushSprite(&canvas, x - slot.xorig, y - slot.yorig, SPRITE_TRANSPARENT); //copy the slot onto the address of the canvas, excluding the transparency color
+    int32_t left = x-slot.xorig;
+    int32_t top = y-slot.yorig;
+    int frame = subimg % slot.frames;
+    screen.setClipRect(left, top, slot.frame_width, slot.canvas.height());
+    slot.canvas.pushSprite(&screen, left - frame * slot.frame_width, top, SPRITE_TRANSPARENT); //copy the slot onto the address of the canvas, excluding the transparency color
+    screen.clearClipRect();
+    
 }
