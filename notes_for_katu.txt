@@ -87,3 +87,9 @@ to get art onto the device:
 
 
 we use uint64_t for time because uint32_t is a time bomb that will reset after only ~49 days. uint64_t lasts for millions of years.
+
+about writing variables:
+- ALL_CAPS means that the variable is a constant and is never changed by code. It's defined once, by the programmer.
+- lowercase means that the variables can be changed by code.
+
+FPS is limited to 15 but it reads as 16 because it rounds up. an int divided by an int returns a rounded int, no decimals.
