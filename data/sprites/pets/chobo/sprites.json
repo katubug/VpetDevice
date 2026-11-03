@@ -1,0 +1,7 @@
+{
+  "origin": [56, 140],
+  "sprites": {
+    "spr_chobo_base": {},
+    "spr_chobo_walk": { "file": "spr_chobo_walk_strip4.png" }
+  }
+}

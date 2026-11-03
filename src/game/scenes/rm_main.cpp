@@ -30,7 +30,7 @@ void RmMain::draw(){
     Scene::draw();  //event_inherited()
     //then, RmMain's own stuff:
     draw_color(bg_color);
-    int anim_frame = current_time()/WALK_FRAME_MS;
+    int anim_frame = current_time()/ANIM_FRAME_MS;
     draw_sprite(spr_chobo_walk_strip4, anim_frame, display_get_width()/2, PET_GROUND_Y);
     draw_text(display_get_width()/2, display_get_height()/2-30, 2, text_color, Align::center, label);
 }

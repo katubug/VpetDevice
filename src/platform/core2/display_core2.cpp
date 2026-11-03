@@ -2,8 +2,10 @@
 #include <M5Unified.h>
 #include "platform/display.h"
 #include "platform/log.h"
+#include "game/config.h"
 #include <cstring>  //for strstr
 #include <cstdlib>  //for atoi
+#include <ArduinoJson.h>    //for image manifests
 
 static M5Canvas screen(&M5.Display);     //offscreen copy of the screen to reduce flickering
 
@@ -34,16 +36,7 @@ void draw_text(int x, int y, int size, uint32_t color, Align align, const char* 
     screen.drawString(text, x, y);
 }
 
-void display_init(){
-    screen.createSprite(M5.Display.width(), M5.Display.height());
-    LittleFS.begin();
-    bool chobo = LittleFS.exists("/sprites/spr_chobo_base.png");
-    show_debug_message("chobo exists: %d", chobo);
-}
 
-void display_push(){
-    screen.pushSprite(0, 0);
-}
 
 struct SpriteSlot{
     M5Canvas canvas;
@@ -55,6 +48,7 @@ struct SpriteSlot{
 
 const int MAX_SPRITES = 256;
 const uint32_t SPRITE_TRANSPARENT = 0xFF00FF; //magenta, never use this in art
+const int MAX_PATH_LENGTH = 96;
 
 static SpriteSlot sprites[MAX_SPRITES];
 static int sprite_count = 0;    // how many slots are used
@@ -73,6 +67,42 @@ static bool png_size(const char* path, int& w, int& h){
     return true;
 }
 
+static void load_manifest(const char* folder){
+    char manifest_path[MAX_PATH_LENGTH];
+    snprintf(manifest_path, sizeof(manifest_path), "/sprites/%s/sprites.json", folder);
+
+    File manifest_file = LittleFS.open(manifest_path, "r");
+    if (!manifest_file) {show_debug_message("no manifest: %s", manifest_path); return;}
+
+    JsonDocument manifest;  //this variable holds the parsed json
+    DeserializationError error = deserializeJson(manifest, manifest_file);  //okay so i'm shaky on this, but basically this allows us to return multiple values somehow: the parsed json in "manifest", and "error", which contains a judgment on the content of manifest? error or not error?
+    manifest_file.close();
+    if (error) {show_debug_message("bad json in %s: %s", manifest_path, error.c_str()); return;}
+
+    int default_xorig = manifest["origin"][0] | 0;  //"|0" is "or zero" aka "use 0 if this value is missing"
+        /*
+        | 0: normally | is bitwise OR, same as in GM. ArduinoJson redefines it for its own types to mean "this, or if it's missing / the wrong type, use this default". Libraries are allowed to do that in C++ (it's called operator overloading). Here it means default_xorig = 56, or 0 if the folder has no origin.
+        */
+
+    int default_yorig = manifest["origin"][1] | 0;
+
+    for (JsonPair entry : manifest["sprites"].as<JsonObject>()){    //loop over every sprite in the folder
+        const char* sprite_name = entry.key().c_str();  //c_str is .toString() i think
+        JsonObject info = entry.value();
+        int xorig = info["origin"][0] | default_xorig;
+        int yorig = info["origin"][1] | default_yorig;
+        const char* file = info["file"] | "";   //if this value isn't set, use the name of the file .png
+        show_debug_message("%s: file='%s' origin=%d,%d", sprite_name, file, xorig, yorig);   
+    }
+}
+
+/*
+static bool find_sprite_file(const char* fname, char* path, size_t path_size){
+    snprintf(path, path_size, "/sprites/%s.png", fname);
+    if (LittleFS.exists(fname)) return true;
+}
+*/
+
 int sprite_add(const char* fname, int xorig, int yorig){
     if (sprite_count >= MAX_SPRITES) {
         show_debug_message("sprite-add: sprite Count %d has exceeded max sprites %d", sprite_count, MAX_SPRITES);
@@ -87,7 +117,7 @@ int sprite_add(const char* fname, int xorig, int yorig){
     }
     
     //build the filepath
-    char path[64];  //makes an empty text 64 chars long to put the filepath into
+    char path[MAX_PATH_LENGTH];  //makes an empty text (variable) chars long to put the filepath into
     snprintf(path, sizeof(path), "/sprites/%s.png", fname);
     
     //get the png size
@@ -124,4 +154,15 @@ void draw_sprite(int sprite, int subimg, int x, int y){
     slot.canvas.pushSprite(&screen, left - frame * slot.frame_width, top, SPRITE_TRANSPARENT); //copy the slot onto the address of the canvas, excluding the transparency color
     screen.clearClipRect();
     
+}
+
+void display_init(){
+    screen.createSprite(M5.Display.width(), M5.Display.height());
+    LittleFS.begin();
+    load_manifest("pets/chobo");
+    load_manifest("ui/menu");
+}
+
+void display_push(){
+    screen.pushSprite(0, 0);
 }

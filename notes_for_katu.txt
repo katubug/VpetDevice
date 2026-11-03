@@ -93,3 +93,8 @@ about writing variables:
 - lowercase means that the variables can be changed by code.
 
 FPS is limited to 15 but it reads as 16 because it rounds up. an int divided by an int returns a rounded int, no decimals.
+
+
+===[Things You Can Optimize Later On]===
+
+MAX_PATH_LENGTH = 96 leaves plenty of room for /sprites/pets/chobo/... without wasting much memory. If memory ever gets tight, I could store the folder once per manifest instead of repeating it in every path.

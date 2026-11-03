@@ -1,0 +1,13 @@
+{
+  "origin": [16,16],
+  "sprites": {
+    "spr_menu_bathroom": {},
+    "spr_menu_goout": {},
+    "spr_menu_inventory": {},
+    "spr_menu_kitchen": {},
+    "spr_menu_pet": {},
+    "spr_menu_phone": {},
+    "spr_menu_settings": {},
+    "spr_menu_home": {}
+  }
+}
