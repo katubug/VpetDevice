@@ -2,7 +2,6 @@
 #include <M5Unified.h>
 #include "platform/display.h"
 #include "platform/log.h"
-#include "game/config.h"
 #include <cstring>  //for strstr
 #include <cstdlib>  //for atoi
 #include <ArduinoJson.h>    //for image manifests
@@ -36,8 +35,6 @@ void draw_text(int x, int y, int size, uint32_t color, Align align, const char* 
     screen.drawString(text, x, y);
 }
 
-
-
 struct SpriteSlot{
     M5Canvas canvas;
     int xorig = 0;
@@ -46,11 +43,23 @@ struct SpriteSlot{
     int frame_width = 0;
 };
 
-const int MAX_SPRITES = 256;
+const int MAX_MANIFEST_ENTRIES = 256;
+const int MAX_LOADED_SPRITES = 64;
 const uint32_t SPRITE_TRANSPARENT = 0xFF00FF; //magenta, never use this in art
 const int MAX_PATH_LENGTH = 96;
+const int MAX_NAME_LENGTH = 32;
 
-static SpriteSlot sprites[MAX_SPRITES];
+struct ManifestEntry{
+    char name[MAX_NAME_LENGTH];
+    char path[MAX_PATH_LENGTH];
+    int xorig = 0;
+    int yorig = 0;
+};
+
+static ManifestEntry manifest_entries[MAX_MANIFEST_ENTRIES];
+static int manifest_count = 0;
+
+static SpriteSlot sprites[MAX_LOADED_SPRITES];
 static int sprite_count = 0;    // how many slots are used
 
 //this bit is to get the size of a png file - 
@@ -87,12 +96,32 @@ static void load_manifest(const char* folder){
     int default_yorig = manifest["origin"][1] | 0;
 
     for (JsonPair entry : manifest["sprites"].as<JsonObject>()){    //loop over every sprite in the folder
-        const char* sprite_name = entry.key().c_str();  //c_str is .toString() i think
-        JsonObject info = entry.value();
-        int xorig = info["origin"][0] | default_xorig;
-        int yorig = info["origin"][1] | default_yorig;
-        const char* file = info["file"] | "";   //if this value isn't set, use the name of the file .png
-        show_debug_message("%s: file='%s' origin=%d,%d", sprite_name, file, xorig, yorig);   
+        if (manifest_count >= MAX_MANIFEST_ENTRIES){
+            show_debug_message("load_manifest: table full, skipping %s", entry.key().c_str());  //c_str is .toString()
+            return;
+
+            const char* sprite_name = entry.key().c_str();
+            JsonObject info = entry.value();
+            const char* file = info["file"] | "";   //write it into a file
+
+            ManifestEntry& table_entry = manifest_entries[manifest_count];  //add the manifest entry as a table entry
+
+            snprintf(table_entry.name, sizeof(table_entry.name), "%s", sprite_name);
+            
+            /*
+            table_entry.name = sprite_name; won't compile, because C++ doesn't let you assign a whole array with =. Using snprintf with plain "%s" means "copy this text in, and don't overflow". sizeof(table_entry.name) works here (it gives 32, or whatever you chose) because name is a real array inside the struct, not a pointer.
+            */
+
+            if (file[0] == '\0'){   // if no "file" in the json, use name.png
+                snprintf(table_entry.path, sizeof(table_entry), "/sprites/%s/%s.png", folder, file);   //??
+            } else {
+                snprintf(table_entry.path, sizeof(table_entry.path), "/sprites/%s/%s", folder, file);
+            }
+
+            table_entry.xorig = info["origin"][0] | default_xorig;
+            table_entry.yorig = info["origin"][1] | default_yorig;
+
+        } 
     }
 }
 
@@ -104,8 +133,8 @@ static bool find_sprite_file(const char* fname, char* path, size_t path_size){
 */
 
 int sprite_add(const char* fname, int xorig, int yorig){
-    if (sprite_count >= MAX_SPRITES) {
-        show_debug_message("sprite-add: sprite Count %d has exceeded max sprites %d", sprite_count, MAX_SPRITES);
+    if (sprite_count >= MAX_LOADED_SPRITES) {
+        show_debug_message("sprite-add: sprite Count %d has exceeded max sprites %d", sprite_count, MAX_LOADED_SPRITES);
         return -1;
     }
 

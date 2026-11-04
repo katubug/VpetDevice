@@ -98,3 +98,5 @@ FPS is limited to 15 but it reads as 16 because it rounds up. an int divided by 
 ===[Things You Can Optimize Later On]===
 
 MAX_PATH_LENGTH = 96 leaves plenty of room for /sprites/pets/chobo/... without wasting much memory. If memory ever gets tight, I could store the folder once per manifest instead of repeating it in every path.
+
+If the manifest table ever has to grow past ~500 sprites, the next fix is to put it in PSRAM. That needs dynamic memory allocation, which i can learn later.
