@@ -122,18 +122,12 @@ static void load_manifest(const char* folder){
         table_entry.xorig = info["origin"][0] | default_xorig;
         table_entry.yorig = info["origin"][1] | default_yorig;
 
-        show_debug_message("%s: file='%s' origin=%d,%d", sprite_name, file, table_entry.xorig, table_entry.yorig);
+        show_debug_message("%s: file='%s' origin=%d,%d", table_entry.name, table_entry.path, table_entry.xorig, table_entry.yorig);
         manifest_count++;
 
     } 
 }
 
-/*
-static bool find_sprite_file(const char* fname, char* path, size_t path_size){
-    snprintf(path, path_size, "/sprites/%s.png", fname);
-    if (LittleFS.exists(fname)) return true;
-}
-*/
 
 int sprite_add(const char* fname, int xorig, int yorig){
     if (sprite_count >= MAX_LOADED_SPRITES) {
