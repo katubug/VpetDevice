@@ -99,30 +99,33 @@ static void load_manifest(const char* folder){
         if (manifest_count >= MAX_MANIFEST_ENTRIES){
             show_debug_message("load_manifest: table full, skipping %s", entry.key().c_str());  //c_str is .toString()
             return;
+        }
 
-            const char* sprite_name = entry.key().c_str();
-            JsonObject info = entry.value();
-            const char* file = info["file"] | "";   //write it into a file
+        const char* sprite_name = entry.key().c_str();
+        JsonObject info = entry.value();
+        const char* file = info["file"] | "";   //reads filename from json
 
-            ManifestEntry& table_entry = manifest_entries[manifest_count];  //add the manifest entry as a table entry
+        ManifestEntry& table_entry = manifest_entries[manifest_count];  //add the manifest entry as a table entry
 
-            snprintf(table_entry.name, sizeof(table_entry.name), "%s", sprite_name);
-            
-            /*
-            table_entry.name = sprite_name; won't compile, because C++ doesn't let you assign a whole array with =. Using snprintf with plain "%s" means "copy this text in, and don't overflow". sizeof(table_entry.name) works here (it gives 32, or whatever you chose) because name is a real array inside the struct, not a pointer.
-            */
+        snprintf(table_entry.name, sizeof(table_entry.name), "%s", sprite_name);
+        
+        /*
+        table_entry.name = sprite_name; won't compile, because C++ doesn't let you assign a whole array with =. Using snprintf with plain "%s" means "copy this text in, and don't overflow". sizeof(table_entry.name) works here (it gives 32, or whatever you chose) because name is a real array inside the struct, not a pointer.
+        */
 
-            if (file[0] == '\0'){   // if no "file" in the json, use name.png
-                snprintf(table_entry.path, sizeof(table_entry), "/sprites/%s/%s.png", folder, file);   //??
-            } else {
-                snprintf(table_entry.path, sizeof(table_entry.path), "/sprites/%s/%s", folder, file);
-            }
+        if (file[0] == '\0'){   // if no "file" in the json, use name.png
+            snprintf(table_entry.path, sizeof(table_entry.path), "/sprites/%s/%s.png", folder, sprite_name);   //use the sprite name plus ".png"
+        } else {
+            snprintf(table_entry.path, sizeof(table_entry.path), "/sprites/%s/%s", folder, file);   //use the file name
+        }
 
-            table_entry.xorig = info["origin"][0] | default_xorig;
-            table_entry.yorig = info["origin"][1] | default_yorig;
+        table_entry.xorig = info["origin"][0] | default_xorig;
+        table_entry.yorig = info["origin"][1] | default_yorig;
 
-        } 
-    }
+        show_debug_message("%s: file='%s' origin=%d,%d", sprite_name, file, table_entry.xorig, table_entry.yorig);
+        manifest_count++;
+
+    } 
 }
 
 /*
