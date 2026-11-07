@@ -15,3 +15,4 @@ void draw_sprite(int sprite, int subimg, int x, int y); //subimg = frame number
 
 void display_init();
 void display_push();
+void sprite_delete(int sprite);

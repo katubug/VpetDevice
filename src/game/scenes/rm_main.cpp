@@ -21,6 +21,8 @@ void RmMain::update(){  //This is "Step"
   }
 
   if (input_check_pressed(Verb::cancel)){
+    sprite_delete(spr_chobo_walk);
+    spr_chobo_walk = -1;
     room_goto(Room::rm_initial);
   }
 

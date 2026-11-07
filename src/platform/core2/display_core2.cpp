@@ -41,6 +41,7 @@ struct SpriteSlot{
     int yorig = 0;
     int frames = 1;
     int frame_width = 0;
+    bool in_use = false;
 };
 
 const int MAX_MANIFEST_ENTRIES = 256;
@@ -60,7 +61,6 @@ static ManifestEntry manifest_entries[MAX_MANIFEST_ENTRIES];
 static int manifest_count = 0;
 
 static SpriteSlot sprites[MAX_LOADED_SPRITES];
-static int sprite_count = 0;    // how many slots are used
 
 //this bit is to get the size of a png file - 
 //png files stores width and height as 4 byte numbers, starting at byte 16, so that's where we look
@@ -138,11 +138,6 @@ static int find_manifest_entry(const char* sprite_name){
 }
 
 int sprite_add(const char* name){
-    if (sprite_count >= MAX_LOADED_SPRITES) {
-        show_debug_message("sprite-add: sprite Count %d has exceeded max sprites %d", sprite_count, MAX_LOADED_SPRITES);
-        return -1;
-    }
-
     int entry_index = find_manifest_entry(name);
     if (entry_index == -1){
         show_debug_message("sprite_add: no manifest entry for %s", name);
@@ -165,8 +160,20 @@ int sprite_add(const char* name){
         return -1;
     }
 
+        int free_slot = -1;     // instantiate free slot but we haven't found one yet
+    for (int i = 0; i < MAX_LOADED_SPRITES; i++){  //search all slots
+        if (!sprites[i].in_use){        //check if the slot is in use
+            free_slot = i;              //mark the slot as free and exit
+            break;
+        }
+    }
+    if (free_slot == -1){
+        show_debug_message("sprite_add: no free slots (max %d)", MAX_LOADED_SPRITES);
+        return -1;
+    }
+
     //set up the slot to draw the png into
-    SpriteSlot& slot = sprites[sprite_count]; //chooses the next open slot. & makes this a nickname instead of making a copy
+    SpriteSlot& slot = sprites[free_slot]; //chooses the next open slot. & makes this a nickname instead of making a copy
     slot.canvas.setPsram(true); //you can use slot.canvas and it's different from regular canvas because it's inside "slot"
     slot.canvas.createSprite(width, height);
     slot.canvas.fillSprite(SPRITE_TRANSPARENT);
@@ -175,13 +182,13 @@ int sprite_add(const char* name){
     slot.yorig = entry.yorig;
     slot.frames = frame_count;
     slot.frame_width = width/frame_count;
+    slot.in_use = true;
 
-    return sprite_count++; //returns the slot we used and adds 1 one to the number
-    //works the same as "int index = sprite_count; sprite_count++"
+    return free_slot; //returns the slot we used
 }
 
 void draw_sprite(int sprite, int subimg, int x, int y){
-    if (sprite < 0 || sprite >= sprite_count) return;   //if the sprite is not loaded, don't continue
+    if (sprite < 0 || sprite >= MAX_LOADED_SPRITES || !sprites[sprite].in_use) return;   //if the sprite is not loaded, don't continue
 
     SpriteSlot& slot = sprites[sprite]; //grabs the CURRENT slot, not the next slot
     int32_t left = x-slot.xorig;
@@ -191,6 +198,15 @@ void draw_sprite(int sprite, int subimg, int x, int y){
     slot.canvas.pushSprite(&screen, left - frame * slot.frame_width, top, SPRITE_TRANSPARENT); //copy the slot onto the address of the canvas, excluding the transparency color
     screen.clearClipRect();
     
+}
+
+void sprite_delete(int sprite){
+    if (sprite < 0 || sprite >= MAX_LOADED_SPRITES || !sprites[sprite].in_use) return;   //if the sprite is not loaded, don't continue
+
+    SpriteSlot& slot = sprites[sprite]; //grabs the CURRENT slot, not the next slot
+    slot.canvas.deleteSprite();
+    slot.in_use = false;
+
 }
 
 void display_init(){
