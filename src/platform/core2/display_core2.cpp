@@ -122,7 +122,7 @@ static void load_manifest(const char* folder){
         table_entry.xorig = info["origin"][0] | default_xorig;
         table_entry.yorig = info["origin"][1] | default_yorig;
 
-        show_debug_message("%s: file='%s' origin=%d,%d", table_entry.name, table_entry.path, table_entry.xorig, table_entry.yorig);
+        show_debug_message("%s: path='%s' origin=%d,%d", table_entry.name, table_entry.path, table_entry.xorig, table_entry.yorig);
         manifest_count++;
 
     } 
@@ -209,11 +209,21 @@ void sprite_delete(int sprite){
 
 }
 
+static void check_manifest_files(){
+    for (int i = 0; i < manifest_count; i++){   //the loop runs while i is less than the manifest count
+        const ManifestEntry& entry = manifest_entries[i];
+        if (!LittleFS.exists(entry.path)){
+            show_debug_message("check_manifest_files: %s has no file at %s", entry.name, entry.path);
+        }
+    }
+}
+
 void display_init(){
     screen.createSprite(M5.Display.width(), M5.Display.height());
     LittleFS.begin();
     load_manifest("pets/chobo");
     load_manifest("ui/menu");
+    check_manifest_files();     //this goes at the end because the manifests have to be loaded first
 }
 
 void display_push(){
