@@ -16,6 +16,9 @@ static textdatum_t datum_for(Align align){
     return textdatum_t::top_left;
 }
 
+const char* sprite_folders[] = {"pets/chobo", "ui/menu"};
+const int SPRITE_FOLDER_COUNT = sizeof(sprite_folders)/sizeof(sprite_folders[0]);       //the number of folders is equal to the size of the array in bytes, divided by the size of one array entry
+
 int display_get_width(){
     return M5.Display.width();
 }
@@ -221,8 +224,9 @@ static void check_manifest_files(){
 void display_init(){
     screen.createSprite(M5.Display.width(), M5.Display.height());
     LittleFS.begin();
-    load_manifest("pets/chobo");
-    load_manifest("ui/menu");
+    for (int i = 0; i < SPRITE_FOLDER_COUNT; i++){
+        load_manifest(sprite_folders[i]);
+    }
     check_manifest_files();     //this goes at the end because the manifests have to be loaded first
 }
 
