@@ -8,6 +8,7 @@ class RmMain: public Scene{
         void update() override;
         void draw() override;
         void room_start() override;
+        void room_end() override;
 
     private:
         uint32_t bg_color = c_background_blue;

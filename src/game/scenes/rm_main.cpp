@@ -21,8 +21,6 @@ void RmMain::update(){  //This is "Step"
   }
 
   if (input_check_pressed(Verb::cancel)){
-    sprite_delete(spr_chobo_walk);
-    spr_chobo_walk = -1;
     room_goto(Room::rm_initial);
   }
 
@@ -43,4 +41,10 @@ void RmMain::room_start(){  //this resets the variables to the values in rm_main
     if (spr_chobo_walk == -1){
       spr_chobo_walk = sprite_add("spr_chobo_walk");
     }
+}
+
+void RmMain::room_end(){
+    sprite_delete(spr_chobo_walk);
+    spr_chobo_walk = -1;
+    show_debug_message("ending rm_main");
 }

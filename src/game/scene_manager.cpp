@@ -17,8 +17,9 @@ static Scene* scene_for(Room room){
 }
 
 void room_goto(Room room){
-    current_scene = scene_for(room); //sets our current room
-    if (current_scene != nullptr) current_scene->room_start();  //resets the room we entered
+    if (current_scene != nullptr) current_scene->room_end();    // ends the room we're currently in.
+    current_scene = scene_for(room); //sets the room we're entering
+    if (current_scene != nullptr) current_scene->room_start();  //resets to the room we entered
 }
 
 void scene_update() {
