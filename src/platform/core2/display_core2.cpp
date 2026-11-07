@@ -128,29 +128,40 @@ static void load_manifest(const char* folder){
     } 
 }
 
+static int find_manifest_entry(const char* sprite_name){
+    for (int i = 0; i < manifest_count; i++){
+        if (strcmp(manifest_entries[i].name, sprite_name) == 0 ){
+            return i;
+        }
+    }
+    return -1;
+}
 
-int sprite_add(const char* fname, int xorig, int yorig){
+int sprite_add(const char* name){
     if (sprite_count >= MAX_LOADED_SPRITES) {
         show_debug_message("sprite-add: sprite Count %d has exceeded max sprites %d", sprite_count, MAX_LOADED_SPRITES);
         return -1;
     }
 
+    int entry_index = find_manifest_entry(name);
+    if (entry_index == -1){
+        show_debug_message("sprite_add: no manifest entry for %s", name);
+        return -1;
+    }
+    const ManifestEntry& entry = manifest_entries[entry_index]; //nickname for the row, same as SpriteSlot& slot
+
     //read the filename to determine frame number
     int frame_count = 1;    //if the filename doesn't have "_strip", it defaults to 1 frame
-    const char* strip = strstr(fname, "_strip");    //find "_strip" in the name
+    const char* strip = strstr(entry.path, "_strip");    //find "_strip" in the name
     if (strip != nullptr){
         frame_count = atoi(strip+6);    //read the number after it
     }
     
-    //build the filepath
-    char path[MAX_PATH_LENGTH];  //makes an empty text (variable) chars long to put the filepath into
-    snprintf(path, sizeof(path), "/sprites/%s.png", fname);
-    
     //get the png size
     int width = 0;
     int height = 0;
-    if (!png_size(path, width, height)) {
-        show_debug_message("sprite_add: couldn't read %s", path);
+    if (!png_size(entry.path, width, height)) {
+        show_debug_message("sprite_add: couldn't read %s", entry.path);
         return -1;
     }
 
@@ -159,9 +170,9 @@ int sprite_add(const char* fname, int xorig, int yorig){
     slot.canvas.setPsram(true); //you can use slot.canvas and it's different from regular canvas because it's inside "slot"
     slot.canvas.createSprite(width, height);
     slot.canvas.fillSprite(SPRITE_TRANSPARENT);
-    slot.canvas.drawPngFile(LittleFS, path, 0, 0);
-    slot.xorig = xorig;
-    slot.yorig = yorig;
+    slot.canvas.drawPngFile(LittleFS, entry.path, 0, 0);
+    slot.xorig = entry.xorig;
+    slot.yorig = entry.yorig;
     slot.frames = frame_count;
     slot.frame_width = width/frame_count;
 
