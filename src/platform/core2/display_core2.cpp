@@ -45,6 +45,8 @@ struct SpriteSlot{
     int frames = 1;
     int frame_width = 0;
     bool in_use = false;
+    int which_sprite = -1;
+    int current_users = 0;
 };
 
 const int MAX_MANIFEST_ENTRIES = 256;
@@ -157,6 +159,13 @@ int sprite_add(const char* name){
     }
     const ManifestEntry& entry = manifest_entries[entry_index]; //nickname for the row, same as SpriteSlot& slot
 
+    for (int i = 0; i < MAX_LOADED_SPRITES; i++){
+        if (sprites[i].in_use && sprites[i].which_sprite == entry_index){
+            sprites[i].current_users++;
+            return i;   //return JUST the current index. nothing fancy.
+        } 
+    }
+
     //read the filename to determine frame number
     int frame_count = 1;    //if the filename doesn't have "_strip", it defaults to 1 frame
     const char* strip = strstr(entry.path, "_strip");    //find "_strip" in the name
@@ -195,6 +204,8 @@ int sprite_add(const char* name){
     slot.frames = frame_count;
     slot.frame_width = width/frame_count;
     slot.in_use = true;
+    slot.current_users = 1;
+    slot.which_sprite = entry_index;
 
     return free_slot; //returns the slot we used
 }
@@ -216,8 +227,12 @@ void sprite_delete(int sprite){
     if (sprite < 0 || sprite >= MAX_LOADED_SPRITES || !sprites[sprite].in_use) return;   //if the sprite is not loaded, don't continue
 
     SpriteSlot& slot = sprites[sprite]; //grabs the CURRENT slot, not the next slot
-    slot.canvas.deleteSprite();
-    slot.in_use = false;
+    slot.current_users--;
+    if (slot.current_users == 0){
+        slot.canvas.deleteSprite();
+        slot.in_use = false;
+    }
+    
 
 }
 
