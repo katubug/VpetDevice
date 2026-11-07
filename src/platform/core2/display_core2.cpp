@@ -17,7 +17,7 @@ static textdatum_t datum_for(Align align){
 }
 
 const char* sprite_folders[] = {"pets/chobo", "ui/menu"};
-const int SPRITE_FOLDER_COUNT = sizeof(sprite_folders)/sizeof(sprite_folders[0]);       //the number of folders is equal to the size of the array in bytes, divided by the size of one array entry
+const int SPRITE_FOLDER_COUNT = sizeof(sprite_folders)/sizeof(sprite_folders[0]);       //the number of folders is equal to the size of the array in bytes, divided by the size of one array entry. this ONLY works when the array is visible at the file level (so if it's dynamic or defined elsewhere, no dice)
 
 int display_get_width(){
     return M5.Display.width();
@@ -140,6 +140,15 @@ static int find_manifest_entry(const char* sprite_name){
     return -1;
 }
 
+static int find_manifest_entry_by_path(const char* sprite_path){
+    for (int i = 0; i < manifest_count; i++){
+        if (strcmp(manifest_entries[i].path, sprite_path) == 0 ){
+            return i;
+        }
+    }
+    return -1;
+}
+
 int sprite_add(const char* name){
     int entry_index = find_manifest_entry(name);
     if (entry_index == -1){
@@ -221,6 +230,27 @@ static void check_manifest_files(){
     }
 }
 
+static void check_unlisted_pngs(){
+    for (int i = 0; i < SPRITE_FOLDER_COUNT; i++){
+        char folder_path[MAX_PATH_LENGTH];
+        snprintf(folder_path, sizeof(folder_path), "/sprites/%s", sprite_folders[i]);
+        
+        File folder = LittleFS.open(folder_path);   //same as opening file
+        if (!folder || !folder.isDirectory()) continue; //not there? move on. continue skips the rest of the current pass and jumps to the next i
+
+        File png_file = folder.openNextFile();
+        while (png_file){   //becomes false when no files are left
+            bool is_png = strstr(png_file.name(), ".png") !=nullptr;
+            if (is_png && find_manifest_entry_by_path(png_file.path()) == -1){
+                show_debug_message("check_unlisted_pngs: %s isn't in any manifest", png_file.path());
+            }
+            png_file.close();
+            png_file = folder.openNextFile();   //move on to the next file
+        }
+        folder.close(); //close the folder once all done.
+    }
+}
+
 void display_init(){
     screen.createSprite(M5.Display.width(), M5.Display.height());
     LittleFS.begin();
@@ -228,6 +258,7 @@ void display_init(){
         load_manifest(sprite_folders[i]);
     }
     check_manifest_files();     //this goes at the end because the manifests have to be loaded first
+    check_unlisted_pngs();
 }
 
 void display_push(){
