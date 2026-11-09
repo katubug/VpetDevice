@@ -30,6 +30,8 @@ when using ingame variables:
 - %llu for "long long unsigned" aka a really long number such as uint64_t
 - %% for a literal "%" sign
 
+% in a function(?) means "the remainder after dividing" and it can be used for "automagic" wraparound, because [anything] & 8 (for example) will always be between 0 and 7. so if you go past 7, you land on 0.
+
 Finding stuff in a library:
 
 1. check the examples first, they're already on my pc:
