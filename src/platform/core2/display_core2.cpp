@@ -16,7 +16,7 @@ static textdatum_t datum_for(Align align){
     return textdatum_t::top_left;
 }
 
-const char* sprite_folders[] = {"pets/chobo", "ui/menu"};
+const char* sprite_folders[] = {"pets/chobo", "ui/menu", "bg"};
 const int SPRITE_FOLDER_COUNT = sizeof(sprite_folders)/sizeof(sprite_folders[0]);       //the number of folders is equal to the size of the array in bytes, divided by the size of one array entry. this ONLY works when the array is visible at the file level (so if it's dynamic or defined elsewhere, no dice)
 
 int display_get_width(){

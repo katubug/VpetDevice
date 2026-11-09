@@ -1,6 +1,9 @@
 {
   "origin": [0,0],
   "sprites": {
-    "spr_bg_kitchen": {}
+    "spr_bg_kitchen": {},
+    "spr_bg_bathroom": {},
+    "spr_bg_livingroom": {},
+    "spr_bg_garden": {}
   }
 }

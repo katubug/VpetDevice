@@ -16,6 +16,7 @@ class RmMain: public Scene{
         const char* label = "You started the game!";
         int spr_chobo_base = -1;
         int spr_chobo_walk = -1;
+        int spr_bg_kitchen = -1;
 
 };
 
